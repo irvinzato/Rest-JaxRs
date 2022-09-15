@@ -3,7 +3,7 @@ package org.rivera.webapp.jaxrs.models;
 import jakarta.persistence.*;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement //Configuración SOLO para cuando genero formatos XML como respuesta de mis controladores
+//@XmlRootElement //Configuración SOLO para cuando genero formatos XML como respuesta de mis controladores
 @Entity
 @Table(name = "cursos")
 public class Curso {

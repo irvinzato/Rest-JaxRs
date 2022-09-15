@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RequestScoped
 @Path("/cursos")
-@Produces(MediaType.APPLICATION_XML)  //Indico que todos los métodos van a producir el mismo contenido(XML,JSON), otra forma es indicarlo en método "Response.ok()" de cada petición
+@Produces(MediaType.APPLICATION_JSON)  //Indico que todos los métodos van a responder el mismo contenido(XML,JSON), otra forma es indicarlo en método "Response.ok()" de cada petición
 public class CursoRestController {
 
   @Inject
@@ -34,10 +34,56 @@ public class CursoRestController {
     return Response.status(Response.Status.NOT_FOUND).build();
   }
 
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)  //El formato que viene en la request "body", debe estar acorde a lo que produce cada método "Produces"
+  public Response createCourse(Curso course) {
+    try {
+      Curso newCourse = service.saveCourse(course);
+      return Response.ok(newCourse).build();
+    }catch (Exception e){
+      e.printStackTrace();
+      return Response.serverError().build();
+    }
+  }
+
+  @PUT
+  @Path("/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response editCourse(@PathParam("id") Long id, Curso course) {
+    Optional<Curso> optCourse = service.findCourseById(id);
+    if( optCourse.isPresent() ) {
+      Curso editCourse = optCourse.get();
+      editCourse.setName(course.getName());
+      editCourse.setTeacher(course.getTeacher());
+      editCourse.setDescription(course.getDescription());
+      editCourse.setDuration(course.getDuration());
+      try{
+        service.saveCourse(editCourse);
+        return Response.ok(editCourse).build();
+      }catch (Exception e){
+        e.printStackTrace();
+        return Response.serverError().build();
+      }
+    } else {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+  }
+
   @DELETE
   @Path("/{id}")
-  public void deleteCourse(@PathParam("id") Long id) {
-    service.deleteCourse(id);
+  public Response deleteCourse(@PathParam("id") Long id) {
+    Optional<Curso> optCourse = service.findCourseById(id);
+    if( optCourse.isPresent() ) {
+      try{
+        service.deleteCourse(optCourse.get().getId());
+        return Response.noContent().build();
+      }catch (Exception e) {
+        e.printStackTrace();
+        return Response.serverError().build();
+      }
+    } else {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
   }
 
 
