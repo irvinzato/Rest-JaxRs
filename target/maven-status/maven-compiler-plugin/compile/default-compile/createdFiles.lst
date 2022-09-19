@@ -1,3 +1,4 @@
+org\rivera\webapp\jaxrs\models\Instructor.class
 org\rivera\webapp\jaxrs\services\CursoServiceImp.class
 org\rivera\webapp\jaxrs\ProducerEntityManager.class
 org\rivera\webapp\jaxrs\repositories\CursoRepository.class
